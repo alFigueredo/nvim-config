@@ -12,6 +12,11 @@ vim.pack.add { { src = utils.gh 'nvim-treesitter/nvim-treesitter', version = 'ma
 local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
 require('nvim-treesitter').install(parsers)
 
+-- Disable some languages
+local disabled_languages = {
+  latex = true,
+}
+
 ---@param buf integer
 ---@param language string
 local function treesitter_try_attach(buf, language)
@@ -40,6 +45,8 @@ vim.api.nvim_create_autocmd('FileType', {
 
     local language = vim.treesitter.language.get_lang(filetype)
     if not language then return end
+
+    if disabled_languages[language] then return end
 
     local installed_parsers = require('nvim-treesitter').get_installed 'parsers'
 
