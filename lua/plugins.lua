@@ -11,7 +11,15 @@ require 'kickstart.plugins.conform'
 require 'kickstart.plugins.blink-cmp'
 require 'kickstart.plugins.treesitter'
 require 'kickstart.plugins.autopairs'
+require 'kickstart.plugins.oil'
+require 'kickstart.plugins.nvim-ts-autotag'
+require 'kickstart.plugins.hardtime'
+require 'kickstart.plugins.plantuml-syntax'
+require 'kickstart.plugins.resty'
+require 'kickstart.plugins.vimtex'
+require 'kickstart.plugins.render-markdown'
 require 'kickstart.plugins.tokyonight'
+require 'kickstart.plugins.lualine'
 
 -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
 -- init.lua. If you want these files, they are in the repository, so you can just download them and
