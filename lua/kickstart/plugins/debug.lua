@@ -47,6 +47,8 @@ require('mason-nvim-dap').setup {
   },
 }
 
+require('nvim-dap-virtual-text').setup()
+
 -- Dap UI setup
 -- For more information, see |:help nvim-dap-ui|
 ---@diagnostic disable-next-line: missing-fields
