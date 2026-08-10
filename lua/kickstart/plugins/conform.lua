@@ -26,12 +26,25 @@ require('conform').setup {
     -- python = { "isort", "black" },
     --
     -- You can use 'stop_after_first' to run the first available formatter from the list
-    -- javascript = { "prettierd", "prettier", stop_after_first = true },
+    -- js / ts
+    javascript = { 'prettierd', 'prettier', stop_after_first = true },
+    javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+    typescript = { 'prettierd', 'prettier', stop_after_first = true },
+    typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+    html = { 'prettierd', 'prettier', stop_after_first = true },
+    css = { 'prettierd', 'prettier', stop_after_first = true },
+
+    -- json / yaml / md / http
+    json = { 'prettierd', 'prettier', stop_after_first = true },
+    yaml = { 'prettierd', 'prettier', stop_after_first = true },
+    markdown = { 'prettierd', 'prettier', stop_after_first = true },
+    http = { 'kulala-fmt' },
 
     -- c/c++
     c = { 'clang-format' },
     cpp = { 'clang-format' },
     objc = { 'clang-format' },
+    cmake = { 'gersemi' },
 
     -- shell
     sh = { 'shfmt' },
