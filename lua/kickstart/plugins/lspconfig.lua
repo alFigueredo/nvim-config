@@ -103,7 +103,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 --  See `:help lsp-config` for information about keys and how to configure
 ---@type table<string, vim.lsp.Config>
 local servers = {
-  -- clangd = {},
+  clangd = {},
   -- gopls = {},
   -- pyright = {},
   -- rust_analyzer = {},
@@ -113,6 +113,9 @@ local servers = {
   --
   -- But for many setups, the LSP (`ts_ls`) will work just fine
   -- ts_ls = {},
+
+  bashls = {},
+  neocmake = {},
 
   stylua = {}, -- Used to format Lua code
 
@@ -136,10 +139,7 @@ local servers = {
           checkThirdParty = false,
           -- NOTE: this is a lot slower and will cause issues when working on your own configuration.
           --  See https://github.com/neovim/nvim-lspconfig/issues/3189
-          library = vim.tbl_extend('force', vim.api.nvim_get_runtime_file('', true), {
-            '${3rd}/luv/library',
-            '${3rd}/busted/library',
-          }),
+          library = vim.api.nvim_get_runtime_file('', true),
         },
       })
     end,
