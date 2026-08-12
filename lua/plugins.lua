@@ -21,6 +21,7 @@ require 'kickstart.plugins.render-markdown'
 require 'kickstart.plugins.tokyonight'
 require 'kickstart.plugins.lualine'
 require 'kickstart.plugins.debug'
+require 'kickstart.plugins.lint'
 
 -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
 -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -32,7 +33,6 @@ require 'kickstart.plugins.debug'
 --  Uncomment any of the lines below to enable them (you will need to restart nvim).
 --
 -- require 'kickstart.plugins.indent-line'
--- require 'kickstart.plugins.lint'
 -- require 'kickstart.plugins.neo-tree'
 
 -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`

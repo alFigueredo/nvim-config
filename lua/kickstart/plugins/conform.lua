@@ -43,7 +43,6 @@ require('conform').setup {
     -- c/c++
     c = { 'clang-format' },
     cpp = { 'clang-format' },
-    objc = { 'clang-format' },
     cmake = { 'gersemi' },
 
     -- shell
