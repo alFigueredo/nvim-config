@@ -9,6 +9,26 @@ require('conform').setup {
     local enabled_filetypes = {
       lua = true,
       -- python = true,
+
+      javascript = true,
+      javascriptreact = true,
+      typescript = true,
+      typescriptreact = true,
+      html = true,
+      css = true,
+
+      json = true,
+      yaml = true,
+      markdown = true,
+      http = true,
+
+      c = true,
+      cpp = true,
+      cmake = true,
+
+      sh = true,
+      bash = true,
+      zsh = true,
     }
     if enabled_filetypes[vim.bo[bufnr].filetype] then
       return { timeout_ms = 700 }
