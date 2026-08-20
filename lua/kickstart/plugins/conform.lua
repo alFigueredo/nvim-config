@@ -29,6 +29,8 @@ require('conform').setup {
       sh = true,
       bash = true,
       zsh = true,
+
+      java = true,
     }
     if enabled_filetypes[vim.bo[bufnr].filetype] then
       return { timeout_ms = 700 }
@@ -69,6 +71,8 @@ require('conform').setup {
     sh = { 'shfmt' },
     bash = { 'shfmt' },
     zsh = { 'shfmt' },
+
+    java = { 'google-java-format' },
   },
 }
 
