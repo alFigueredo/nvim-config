@@ -30,17 +30,6 @@ vim.keymap.set('n', '<leader>dl', function() require('dapui').toggle() end, { de
 local dap = require 'dap'
 local dapui = require 'dapui'
 
-dap.configurations.cpp = {
-  {
-    name = 'Launch with Cmake',
-    type = 'cppdbg',
-    request = 'launch',
-    program = function() return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/build/Debug/', 'file') end,
-    cwd = '${workspaceFolder}',
-    stopAtEntry = true,
-  },
-}
-
 require('mason-nvim-dap').setup {
   -- Makes a best effort to setup the various debuggers with
   -- reasonable debug configurations
@@ -108,3 +97,14 @@ dap.listeners.before.event_exited['dapui_config'] = dapui.close
 --     detached = vim.fn.has 'win32' == 0,
 --   },
 -- }
+
+dap.configurations.cpp = {
+  {
+    name = 'Launch with Cmake',
+    type = 'cppdbg',
+    request = 'launch',
+    program = function() return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/build/Debug/', 'file') end,
+    cwd = '${workspaceFolder}',
+    stopAtEntry = true,
+  },
+}

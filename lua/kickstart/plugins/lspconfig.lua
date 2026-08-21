@@ -98,15 +98,34 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
+-- Java config
+local bundles = {
+  vim.fn.glob('/home/pankiarch/.local/share/nvim/mason/share/java-debug-adapter/com.microsoft.java.debug.plugin-*.jar', true),
+}
+
+local java_test_bundles = vim.split(vim.fn.glob('/home/pankiarch/.local/share/nvim/mason/share/java-test/*.jar', true), '\n')
+local excluded = {
+  'com.microsoft.java.test.runner-jar-with-dependencies.jar',
+  'jacocoagent.jar',
+}
+for _, java_test_jar in ipairs(java_test_bundles) do
+  local fname = vim.fn.fnamemodify(java_test_jar, ':t')
+  if not vim.tbl_contains(excluded, fname) then table.insert(bundles, java_test_jar) end
+end
+
 -- Enable the following language servers
 --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
 --  See `:help lsp-config` for information about keys and how to configure
 ---@type table<string, vim.lsp.Config>
 local servers = {
   clangd = {},
-  jdtls = {},
+  jdtls = {
+    init_options = {
+      bundles = bundles,
+    },
+  },
   -- gopls = {},
-  -- pyright = {},
+  pyright = {},
   -- rust_analyzer = {},
   --
   -- Some languages (like typescript) have entire language plugins that can be useful:

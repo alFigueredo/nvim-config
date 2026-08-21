@@ -8,7 +8,7 @@ require('conform').setup {
     -- You can specify filetypes to autoformat on save here:
     local enabled_filetypes = {
       lua = true,
-      -- python = true,
+      python = true,
 
       javascript = true,
       javascriptreact = true,
@@ -45,7 +45,7 @@ require('conform').setup {
   formatters_by_ft = {
     -- rust = { 'rustfmt' },
     -- Conform can also run multiple formatters sequentially
-    -- python = { "isort", "black" },
+    python = { 'ruff', 'isort', 'black', stop_after_first = true },
     --
     -- You can use 'stop_after_first' to run the first available formatter from the list
     -- js / ts
