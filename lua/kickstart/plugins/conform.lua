@@ -30,7 +30,7 @@ require('conform').setup {
       bash = true,
       zsh = true,
 
-      java = true,
+      java = false,
     }
     if enabled_filetypes[vim.bo[bufnr].filetype] then
       return { timeout_ms = 700 }
