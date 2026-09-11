@@ -54,5 +54,7 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
     -- avoid superfluous noise, notably within the handy LSP pop-ups that
     -- describe the hovered symbol using Markdown.
     if vim.bo.modifiable then lint.try_lint() end
+
+    lint.try_lint 'editorconfig-checker'
   end,
 })
