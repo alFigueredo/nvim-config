@@ -8,6 +8,8 @@ lint.linters_by_ft = {
   -- c = { 'cpplint' },
   -- cpp = { 'cpplint' },
   -- cmake = { 'cmakelint' },
+
+  java = { 'checkstyle' },
 }
 
 -- To allow other plugins to add linters to require('lint').linters_by_ft,

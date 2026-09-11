@@ -17,8 +17,8 @@ require('conform').setup {
       html = true,
       css = true,
 
-      json = true,
-      yaml = true,
+      json = false,
+      yaml = false,
       markdown = true,
       http = true,
 
