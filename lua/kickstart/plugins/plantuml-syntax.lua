@@ -40,7 +40,12 @@ vim.api.nvim_create_autocmd('FileType', {
       desc = 'Render PlantUML',
     })
 
+    -- Clear previous autocmds for this buffer so re-triggering FileType doesn't stack them
+    local group = vim.api.nvim_create_augroup('plantuml-render', { clear = false })
+    vim.api.nvim_clear_autocmds { group = group, buffer = args.buf }
+
     vim.api.nvim_create_autocmd('BufWritePost', {
+      group = group,
       buffer = args.buf,
       callback = function()
         local file = vim.fn.expand '%:p'
