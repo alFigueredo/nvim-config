@@ -1,354 +1,317 @@
-# kickstart.nvim
+# Configuración de Neovim
 
-## Introduction
+Configuración personal de Neovim basada en
+[kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim), separada en
+módulos y con los plugins gestionados por `vim.pack`, el gestor que viene con
+Neovim. Requiere **Neovim 0.12 o más nuevo**.
 
-A starting point for Neovim that is:
+Está pensada para programar en C/C++, Java, Python (con notebooks vía Molten),
+Lua y shell, y para escribir en LaTeX y Markdown.
 
-* Small
-* Single-file
-* Completely Documented
+## Índice
 
-**NOT** a Neovim distribution, but instead a starting point for your configuration.
+- [Requisitos](#requisitos)
+- [Instalación](#instalación)
+- [Estructura](#estructura)
+- [Atajos generales](#atajos-generales)
+- [Lenguajes](#lenguajes)
+- [Formateo y linting](#formateo-y-linting)
+- [Mantenimiento](#mantenimiento)
 
-## Installation
+## Requisitos
 
-### Install Neovim
-
-Kickstart.nvim targets *only* the latest
-['stable'](https://github.com/neovim/neovim/releases/tag/stable) and latest
-['nightly'](https://github.com/neovim/neovim/releases/tag/nightly) of Neovim.
-If you are experiencing issues, please make sure you have at least the latest
-stable version. Most likely, you want to install neovim via a [package
-manager](https://github.com/neovim/neovim/blob/master/INSTALL.md#install-from-package).
-To check your neovim version, run `nvim --version` and make sure it is not
-below the latest
-['stable'](https://github.com/neovim/neovim/releases/tag/stable) version. If
-your chosen install method only gives you an outdated version of neovim, find
-alternative [installation methods below](#alternative-neovim-installation-methods).
-
-### Install External Dependencies
-
-External Requirements:
-- Basic utils: `git`, `make`, `unzip`, C Compiler (`gcc`)
-- [ripgrep](https://github.com/BurntSushi/ripgrep#installation),
-  [fd-find](https://github.com/sharkdp/fd#installation)
-- [tree-sitter CLI](https://github.com/tree-sitter/tree-sitter/blob/master/crates/cli/README.md#installation)
-- Clipboard tool (xclip/xsel/win32yank or other depending on the platform)
-- A [Nerd Font](https://www.nerdfonts.com/): optional, provides various icons
-  - if you have it set `vim.g.have_nerd_font` in `init.lua` to true
-- Emoji fonts (Ubuntu only, and only if you want emoji!) `sudo apt install fonts-noto-color-emoji`
-- Language Setup:
-  - If you want to write Typescript, you need `npm`
-  - If you want to write Golang, you will need `go`
-  - etc.
-
-> [!NOTE]
-> See [Install Recipes](#Install-Recipes) for additional Windows and Linux specific notes
-> and quick install snippets
-
-### Install Kickstart
-
-> [!NOTE]
-> [Backup](#FAQ) your previous configuration (if any exists)
-
-Neovim's configurations are located under the following paths, depending on your OS:
-
-| OS | PATH |
-| :- | :--- |
-| Linux, MacOS | `$XDG_CONFIG_HOME/nvim`, `~/.config/nvim` |
-| Windows (cmd)| `%localappdata%\nvim\` |
-| Windows (powershell)| `$env:LOCALAPPDATA\nvim\` |
-
-#### Recommended Step
-
-Create your own copy of this repo using GitHub's
-["Use this template"](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
-button so that you have your own copy that you can modify, then install by
-cloning your new repo to your machine using one of the commands below,
-depending on your OS.
-
-Alternatively, you can [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo)
-this repo if you prefer an easy upstream sync path (e.g., keeping your config
-on a separate branch and fast-forwarding `master` from upstream). See the
-[discussion in #1740](https://github.com/nvim-lua/kickstart.nvim/issues/1740)
-for the tradeoffs between the two approaches.
-
-> [!NOTE]
-> Your repo's URL will be something like this:
-> `https://github.com/<your_github_username>/kickstart.nvim.git`
-
-You likely want to remove `nvim-pack-lock.json` from your repo's `.gitignore`
-file too - it's ignored in the kickstart repo to make maintenance easier, but
-it's recommended to track it in version control (see `:help vim.pack-lockfile`).
-
-#### Clone kickstart.nvim
-
-> [!NOTE]
-> If following the recommended step above (i.e., creating your own repo from
-> the template or fork), replace `nvim-lua` with `<your_github_username>`
-> in the commands below
-
-<details><summary> Linux and Mac </summary>
+En Arch Linux:
 
 ```sh
-git clone https://github.com/nvim-lua/kickstart.nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim
+# Base
+sudo pacman -S --needed neovim git make gcc unzip ripgrep fd tree-sitter-cli wl-clipboard nodejs npm python
+
+# C/C++ y Java
+sudo pacman -S --needed cmake gdb jdk-openjdk
+
+# LaTeX, PDF y diagramas (texlive-meta no incluye los paquetes de idioma)
+sudo pacman -S --needed texlive-meta texlive-langspanish texlive-langenglish biber zathura zathura-pdf-mupdf plantuml
 ```
 
-</details>
+- Una [Nerd Font](https://www.nerdfonts.com/) configurada en la terminal (por
+  ejemplo `ttf-jetbrains-mono-nerd`). Si no usás una, poné
+  `vim.g.have_nerd_font = false` en `lua/options.lua`.
+- En X11 se usa `xclip` en lugar de `wl-clipboard`.
+- Opcional: `ueberzugpp` e `imagemagick` para ver imágenes dentro de Neovim
+  (ver [Python y notebooks](#python-y-notebooks-molten)).
 
-<details><summary> Windows </summary>
+Los servidores LSP, formateadores, linters y depuradores se instalan solos con
+[Mason](https://github.com/mason-org/mason.nvim) la primera vez que se abre
+Neovim (`:Mason` muestra su estado).
 
-If you're using `cmd.exe`:
-
-```
-git clone https://github.com/nvim-lua/kickstart.nvim.git "%localappdata%\nvim"
-```
-
-If you're using `powershell.exe`
-
-```
-git clone https://github.com/nvim-lua/kickstart.nvim.git "${env:LOCALAPPDATA}\nvim"
-```
-
-</details>
-
-### Post Installation
-
-Start Neovim
+## Instalación
 
 ```sh
-nvim
+git clone https://github.com/alFigueredo/nvim-config.git ~/.config/nvim
 ```
 
-That's it! `vim.pack` will install all the plugins from your config. Use
-`:lua vim.pack.update(nil, { offline = true })` to inspect plugin state and
-`:lua vim.pack.update()` to fetch updates (`:write` applies updates, `:quit`
-cancels them).
+Antes del primer arranque, creá el entorno de Python que usa Molten. Arch no
+permite instalar paquetes con `pip` en el Python del sistema, por eso va en un
+venv propio:
 
-#### Read The Friendly Documentation
-
-Read through the `init.lua` file in your configuration folder for more
-information about extending and exploring Neovim. That also includes
-examples of adding popularly requested plugins.
-
-> [!NOTE]
-> For more information about a particular plugin check its repository's documentation.
-
-
-### Getting Started
-
-[The Only Video You Need to Get Started with Neovim](https://youtu.be/m8C0Cq9Uv9o)
-
-### FAQ
-
-* What should I do if I already have a pre-existing Neovim configuration?
-  * You should back it up and then delete all associated files.
-  * This includes your existing init.lua and the Neovim files in `~/.local`
-    which can be deleted with `rm -rf ~/.local/share/nvim/`
-* Can I keep my existing configuration in parallel to kickstart?
-  * Yes! You can use [NVIM_APPNAME](https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME)`=nvim-NAME`
-    to maintain multiple configurations. For example, you can install the kickstart
-    configuration in `~/.config/nvim-kickstart` and create an alias:
-    ```
-    alias nvim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
-    ```
-    When you run Neovim using `nvim-kickstart` alias it will use the alternative
-    config directory and the matching local directory
-    `~/.local/share/nvim-kickstart`. You can apply this approach to any Neovim
-    distribution that you would like to try out.
-* What if I want to "uninstall" this configuration:
-  * Remove your config directory and local data directory (for example,
-    `~/.config/nvim` and `~/.local/share/nvim`).
-* Why is the kickstart `init.lua` a single file? Wouldn't it make sense to split it into multiple files?
-  * The main purpose of kickstart is to serve as a teaching tool and a reference
-    configuration that someone can easily use to `git clone` as a basis for their own.
-    As you progress in learning Neovim and Lua, you might consider splitting `init.lua`
-    into smaller parts. A fork of kickstart that does this while maintaining the
-    same functionality is available here:
-    * [kickstart-modular.nvim](https://github.com/dam9000/kickstart-modular.nvim)
-  * Discussions on this topic can be found here:
-    * [Restructure the configuration](https://github.com/nvim-lua/kickstart.nvim/issues/218)
-    * [Reorganize init.lua into a multi-file setup](https://github.com/nvim-lua/kickstart.nvim/pull/473)
-
-### Install Recipes
-
-Below you can find OS specific install instructions for Neovim and dependencies.
-
-After installing all the dependencies continue with the [Install Kickstart](#install-kickstart) step.
-
-#### Windows Installation
-
-<details><summary>Windows with Microsoft C++ Build Tools and CMake</summary>
-Kickstart's default config is make-only for `telescope-fzf-native.nvim`.
-If `make` is unavailable, the plugin is skipped.
-
-Recommended: install `make` (see the chocolatey section below).
-
-If you want a CMake-only setup, customize `init.lua` in two places:
-
-1. Include `telescope-fzf-native.nvim` when `cmake` is available:
-
-```lua
-if vim.fn.executable 'make' == 1 or vim.fn.executable 'cmake' == 1 then
-  table.insert(plugins, gh 'nvim-telescope/telescope-fzf-native.nvim')
-end
+```sh
+python -m venv ~/.local/share/nvim/python-venv
+~/.local/share/nvim/python-venv/bin/pip install pynvim jupyter_client nbformat
 ```
 
-2. In the `PackChanged` hook, use CMake when `make` is unavailable:
+Después abrí `nvim`: `vim.pack` descarga los plugins, compila los que lo
+necesitan y registra el plugin remoto de Molten (`:UpdateRemotePlugins`).
+Conviene reiniciar Neovim una vez que termine.
 
-```lua
-if name == 'telescope-fzf-native.nvim' then
-  if vim.fn.executable 'make' == 1 then
-    run_build(name, { 'make' }, ev.data.path)
-  elseif vim.fn.executable 'cmake' == 1 then
-    run_build(name, { 'cmake', '-S.', '-Bbuild', '-DCMAKE_BUILD_TYPE=Release' }, ev.data.path)
-    run_build(name, { 'cmake', '--build', 'build', '--config', 'Release', '--target', 'install' }, ev.data.path)
-  end
-  return
-end
-```
+Para comprobar que todo esté bien: `:checkhealth`.
 
-See `telescope-fzf-native` documentation for [build details](https://github.com/nvim-telescope/telescope-fzf-native.nvim#installation).
-</details>
-<details><summary>Windows with gcc/make using chocolatey</summary>
-Alternatively, one can install gcc and make which don't require changing the config,
-the easiest way is to use choco:
-
-1. install [chocolatey](https://chocolatey.org/install)
-either follow the instructions on the page or use winget,
-run in cmd as **admin**:
-```
-winget install --accept-source-agreements chocolatey.chocolatey
-```
-
-2. install all requirements using choco, exit the previous cmd and
-open a new one so that choco path is set, and run in cmd as **admin**:
-```
-choco install -y neovim git ripgrep wget fd unzip gzip mingw make tree-sitter
-```
-</details>
-<details><summary>WSL (Windows Subsystem for Linux)</summary>
+## Estructura
 
 ```
-wsl --install
-wsl
-sudo add-apt-repository ppa:neovim-ppa/unstable -y
-sudo apt update
-sudo apt install make gcc ripgrep fd-find tree-sitter-cli unzip git xclip neovim
-```
-</details>
-
-#### Linux Install
-<details><summary>Ubuntu Install Steps</summary>
-
-```
-sudo add-apt-repository ppa:neovim-ppa/unstable -y
-sudo apt update
-sudo apt install make gcc ripgrep fd-find tree-sitter-cli unzip git xclip neovim
-```
-</details>
-<details><summary>Debian Install Steps</summary>
-
-```
-sudo apt update
-sudo apt install make gcc ripgrep fd-find tree-sitter-cli unzip git xclip curl
-
-# Now we install nvim
-curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
-sudo rm -rf /opt/nvim-linux-x86_64
-sudo mkdir -p /opt/nvim-linux-x86_64
-sudo chmod a+rX /opt/nvim-linux-x86_64
-sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
-
-# make it available in /usr/local/bin, distro installs to /usr/bin
-sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/
-```
-</details>
-<details><summary>Fedora Install Steps</summary>
-
-```
-sudo dnf install -y gcc make git ripgrep fd-find tree-sitter-cli unzip neovim
-```
-</details>
-
-<details><summary>Arch Install Steps</summary>
-
-```
-sudo pacman -S --noconfirm --needed gcc make git ripgrep fd tree-sitter-cli unzip neovim
-```
-</details>
-
-### Alternative neovim installation methods
-
-For some systems it is not unexpected that the [package manager installation
-method](https://github.com/neovim/neovim/blob/master/INSTALL.md#install-from-package)
-recommended by neovim is significantly behind. If that is the case for you,
-pick one of the following methods that are known to deliver fresh neovim versions very quickly.
-They have been picked for their popularity and because they make installing and updating
-neovim to the latest versions easy. You can also find more detail about the
-available methods being discussed
-[here](https://github.com/nvim-lua/kickstart.nvim/issues/1583).
-
-
-<details><summary>Bob</summary>
-
-[Bob](https://github.com/MordechaiHadad/bob) is a Neovim version manager for
-all platforms. Simply install
-[rustup](https://rust-lang.github.io/rustup/installation/other.html),
-and run the following commands:
-
-```bash
-rustup default stable
-rustup update stable
-cargo install bob-nvim
-bob use stable
+init.lua                  carga options, keymaps, pack y plugins, en ese orden
+lua/options.lua           opciones del editor (leader = <Space>)
+lua/keymaps.lua           atajos generales y configuración de diagnósticos
+lua/pack.lua              pasos de compilación tras instalar/actualizar plugins
+lua/plugins.lua           lista de módulos de plugins que se cargan
+lua/kickstart/plugins/    un archivo por plugin
+ftplugin/                 ajustes por tipo de archivo (c, cpp, tex, markdown)
 ```
 
-</details>
+Para desactivar un plugin, comentá su `require` en `lua/plugins.lua`.
 
-<details><summary>Homebrew</summary>
+## Atajos generales
 
-[Homebrew](https://brew.sh) is a package manager popular on Mac and Linux.
-Simply install using [`brew install`](https://formulae.brew.sh/formula/neovim).
+`<leader>` y `<localleader>` son la barra espaciadora. `<leader>` solo, con
+una pausa, muestra los atajos disponibles (which-key), y `<leader>sk` permite
+buscarlos.
 
-</details>
+| Atajo | Acción |
+| :- | :- |
+| `<leader>sf` / `<leader>sg` | Buscar archivos / buscar texto en el proyecto |
+| `<leader>sw` | Buscar la palabra bajo el cursor |
+| `<leader><leader>` | Buffers abiertos |
+| `<leader>s.` | Archivos recientes |
+| `<leader>sd` | Diagnósticos |
+| `<leader>sn` | Archivos de esta configuración |
+| `-` | Explorador de archivos (Oil) |
+| `<C-h>` / `<C-l>` | Buffer anterior / siguiente |
+| `<C-x>` | Cerrar buffer |
+| `<leader>f` | Formatear buffer o selección |
+| `<leader>q` | Lista de diagnósticos |
+| `[d` / `]d` | Diagnóstico anterior / siguiente |
 
-<details><summary>Flatpak</summary>
+Las flechas están desactivadas en modo normal y
+[hardtime.nvim](https://github.com/m4xshen/hardtime.nvim) avisa cuando se
+repite `hjkl` en lugar de usar movimientos más eficientes.
 
-Flatpak is a package manager for applications that allows developers to package their applications
-just once to make it available on all Linux systems. Simply [install flatpak](https://flatpak.org/setup/)
-and setup [flathub](https://flathub.org/setup) to [install neovim](https://flathub.org/apps/io.neovim.nvim).
+### LSP
 
-</details>
+| Atajo | Acción |
+| :- | :- |
+| `grd` | Ir a la definición |
+| `grD` | Ir a la declaración |
+| `grr` | Referencias |
+| `gri` | Implementaciones |
+| `grt` | Definición del tipo |
+| `grn` | Renombrar |
+| `gra` | Acciones de código |
+| `gO` / `gW` | Símbolos del archivo / del proyecto |
+| `K` | Documentación |
+| `<leader>th` | Mostrar/ocultar inlay hints |
 
-<details><summary>asdf and mise-en-place</summary>
+### Git (gitsigns)
 
-[asdf](https://asdf-vm.com/) and [mise](https://mise.jdx.dev/) are tool version managers,
-mostly aimed towards project-specific tool versioning. However both support managing tools
-globally in the user-space as well:
+| Atajo | Acción |
+| :- | :- |
+| `]c` / `[c` | Cambio siguiente / anterior |
+| `<leader>hp` | Ver el cambio |
+| `<leader>hs` / `<leader>hr` | Stage / descartar el cambio |
+| `<leader>hb` | Blame de la línea |
+| `<leader>hd` | Diff contra el índice |
+| `<leader>tb` | Blame permanente en la línea actual |
 
-<details><summary>mise</summary>
+### Depuración (nvim-dap)
 
-[Install mise](https://mise.jdx.dev/getting-started.html), then run:
+| Atajo | Acción |
+| :- | :- |
+| `<leader>db` | Breakpoint |
+| `<leader>dB` | Breakpoint condicional |
+| `<leader>dc` | Iniciar / continuar |
+| `<leader>di` / `<leader>do` / `<leader>dO` | Step into / over / out |
+| `<leader>dl` | Repetir la última configuración |
+| `<leader>dt` | Mostrar/ocultar la interfaz |
 
-```bash
-mise plugins install neovim
-mise use neovim@stable
+La interfaz de depuración se abre sola cuando la ejecución se detiene (en un
+breakpoint, un paso o una excepción) y se cierra al terminar.
+
+## Lenguajes
+
+### C y C++
+
+- **LSP:** clangd, con los chequeos de clang-tidy activados y sin agregar
+  `#include` automáticamente al completar. Los chequeos de clang-tidy solo
+  aparecen si el proyecto tiene un `.clang-tidy`.
+- **Base de compilación:** clangd necesita `compile_commands.json`. Con CMake:
+
+  ```sh
+  cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  ```
+
+  clangd lo busca solo en `build/`.
+- **Header ↔ fuente:** `grh` salta entre el `.cpp` y su `.h`.
+- **Indentación:** respeta la del archivo (tabs o espacios) y el
+  `.editorconfig`. Los archivos nuevos usan 2 espacios, como el estilo LLVM
+  por defecto de clang-format.
+- **Formateo:** clang-format al guardar. Usa el `.clang-format` del proyecto si
+  existe. CMake se formatea con gersemi.
+- **Depuración:** cpptools con gdb. `<leader>dc` ofrece tres opciones: lanzar
+  el programa, lanzarlo con argumentos o conectarse a un `gdbserver` en
+  `localhost:1234`. El ejecutable se pide empezando en `build/`, así que
+  compilá con `-DCMAKE_BUILD_TYPE=Debug`. Los contenedores de la STL se ven
+  con sus valores.
+
+### Java
+
+jdtls se inicia con [nvim-jdtls](https://github.com/mfussenegger/nvim-jdtls),
+con un workspace por proyecto en `~/.cache/nvim/jdtls/workspace/`. El proyecto
+se detecta por `pom.xml`, `build.gradle`, `gradlew`, `mvnw` o `.git`.
+
+| Atajo | Acción |
+| :- | :- |
+| `<leader>jo` | Organizar imports |
+| `<leader>jv` / `<leader>jc` | Extraer variable / constante (también en visual) |
+| `<leader>jm` | Extraer método (en visual) |
+| `<leader>jt` | Ejecutar los tests de la clase |
+| `<leader>jn` | Ejecutar el test más cercano |
+| `<leader>jp` | Elegir un test |
+| `<leader>ju` | Recargar la configuración del proyecto |
+
+- **Depuración:** `<leader>dc` muestra las clases `main` del proyecto. Los
+  cambios se aplican en caliente (hot code replace).
+- **Linting:** checkstyle.
+- **Formateo:** google-java-format, solo manual con `<leader>f`.
+
+### Python y notebooks (Molten)
+
+- **LSP:** pyright. **Formateo:** ruff al guardar.
+- **Depuración:** debugpy.
+- **Molten** ejecuta código en un kernel de Jupyter y muestra el resultado
+  debajo de cada celda.
+
+| Atajo | Acción |
+| :- | :- |
+| `<leader>mi` | Iniciar con el venv del proyecto |
+| `<leader>mI` | Iniciar eligiendo el kernel |
+| `<leader>ml` | Evaluar la línea |
+| `<leader>me` | Evaluar un movimiento (`<leader>meip`) o la selección visual |
+| `<leader>mr` | Reevaluar la celda |
+| `<leader>ms` | Entrar a la salida |
+| `<leader>mh` | Ocultar la salida |
+| `<leader>md` | Borrar la celda |
+| `<leader>mp` | Abrir la imagen de la salida en un visor externo |
+
+`<leader>mi` usa el venv activo (`$VIRTUAL_ENV`) o el `.venv`/`venv` de la raíz
+del proyecto, y lo registra como kernel de Jupyter la primera vez. Ese venv
+necesita `ipykernel`:
+
+```sh
+.venv/bin/python -m pip install ipykernel   # o: uv add --dev ipykernel
 ```
 
-</details>
+Si el proyecto no tiene venv, se usa el kernel global `python3`.
 
-<details><summary>asdf</summary>
+Los gráficos se dibujan dentro de Neovim solo si está instalado `ueberzugpp` y
+la sesión es X11, Hyprland, Sway o Wayfire. En KDE Plasma (Wayland) no
+funciona, así que los gráficos se abren con `<leader>mp`.
 
-[Install asdf](https://asdf-vm.com/guide/getting-started.html), then run:
+### LaTeX
 
-```bash
-asdf plugin add neovim
-asdf install neovim stable
-asdf set neovim stable --home
-asdf reshim neovim
-```
+[vimtex](https://github.com/lervag/vimtex) compila y abre el PDF;
+[texlab](https://github.com/latex-lsp/texlab) aporta el autocompletado de
+`\ref`, `\cite` y comandos, y los diagnósticos.
 
-</details>
+| Atajo | Acción |
+| :- | :- |
+| `<leader>ll` | Compilar de forma continua (se recompila al guardar) |
+| `<leader>lv` | Abrir el PDF en la posición del cursor |
+| `<leader>le` | Errores y advertencias de la compilación |
+| `<leader>lc` | Borrar archivos auxiliares |
+| `<leader>lt` | Índice del documento |
 
-</details>
+- Compila con latexmk y biber. Los auxiliares (`.aux`, `.log`, `.bbl`, …) van a
+  `build/`; el PDF queda junto al `.tex`.
+- El visor es zathura. Ctrl+clic en el PDF salta a la línea correspondiente
+  del `.tex`. En X11 con `xdotool` se usa la integración completa de vimtex; en
+  Wayland, la simple.
+
+### Markdown
+
+- [render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim)
+  muestra títulos, listas, tablas y bloques de código con formato mientras se
+  edita. La línea del cursor se ve como texto plano.
+- Formateo con prettierd al guardar.
+
+### Corrector ortográfico
+
+En LaTeX y Markdown el corrector está activo en español e inglés, y las líneas
+largas se cortan entre palabras.
+
+| Atajo | Acción |
+| :- | :- |
+| `]s` / `[s` | Error siguiente / anterior |
+| `z=` | Sugerencias |
+| `zg` | Agregar la palabra al diccionario personal |
+| `zw` | Marcar la palabra como incorrecta |
+
+Neovim ofrece descargar el diccionario de un idioma la primera vez que hace
+falta.
+
+### Otros
+
+- **Lua:** lua_ls y stylua al guardar.
+- **Shell:** bashls y shfmt al guardar.
+- **CMake:** neocmakelsp y gersemi.
+- **PlantUML:** los `.puml` generan un `.png` al guardar. `<leader>pr` (o
+  `:RenderUML`) lo genera y lo abre.
+- **HTTP:** los `.http` se ejecutan con
+  [resty.nvim](https://github.com/lima1909/resty.nvim) (`:Resty run`) y se
+  formatean con kulala-fmt.
+
+## Formateo y linting
+
+Se formatea al guardar con [conform.nvim](https://github.com/stevearc/conform.nvim)
+en los tipos de archivo habilitados en `lua/kickstart/plugins/conform.lua`. JSON,
+YAML y Java quedan fuera y se formatean a mano con `<leader>f`.
+
+| Lenguaje | Formateador |
+| :- | :- |
+| C / C++ | clang-format |
+| CMake | gersemi |
+| Python | ruff |
+| Lua | stylua |
+| Shell | shfmt |
+| JS / TS / HTML / CSS / JSON / YAML / Markdown | prettierd |
+| HTTP | kulala-fmt |
+| Java | google-java-format |
+
+El linting corre con [nvim-lint](https://github.com/mfussenegger/nvim-lint):
+checkstyle para Java y editorconfig-checker para todos los archivos. Se
+revisa al abrir el buffer, al guardar y al salir del modo inserción.
+
+## Mantenimiento
+
+| Tarea | Cómo |
+| :- | :- |
+| Actualizar plugins | `:lua vim.pack.update()`. `:write` aplica los cambios y `:quit` los cancela |
+| Ver el estado de los plugins | `:lua vim.pack.update(nil, { offline = true })` |
+| Actualizar LSP y herramientas | `:MasonToolsUpdate` |
+| Actualizar parsers de treesitter | `:TSUpdate` |
+| Revisar problemas | `:checkhealth` |
+
+`nvim-pack-lock.json` guarda la versión exacta de cada plugin y está versionado:
+al clonar en otra máquina, `vim.pack` instala esas mismas versiones.
+Después de actualizar plugins, commiteá el lockfile junto con los cambios.
+
+## Licencia
+
+MIT, como kickstart.nvim. Ver [LICENSE.md](LICENSE.md).
