@@ -123,6 +123,7 @@ local servers = {
 
   bashls = {},
   neocmake = {},
+  texlab = {}, -- completion and diagnostics for LaTeX; building and viewing is done by vimtex
 
   stylua = {}, -- Used to format Lua code
 

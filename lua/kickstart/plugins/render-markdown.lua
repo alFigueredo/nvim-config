@@ -1,5 +1,4 @@
 local utils = require 'kickstart.plugins.utils'
 
-vim.pack.add { utils.gh 'nvim-treesitter/nvim-treesitter' }
-vim.pack.add { utils.gh 'nvim-mini/mini.nvim' }
+-- Depends on nvim-treesitter and mini.nvim (icons), already added in treesitter.lua and mini.lua
 vim.pack.add { utils.gh 'MeanderingProgrammer/render-markdown.nvim' }
