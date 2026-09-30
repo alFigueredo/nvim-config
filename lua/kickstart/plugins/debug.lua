@@ -85,7 +85,8 @@ for type, icon in pairs(breakpoint_icons) do
   vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
 end
 
-dap.listeners.after.event_initialized['dapui_config'] = dapui.open
+-- Open only when execution pauses (breakpoint, step, exception), so plain runs like jdtls tests don't flash the UI
+dap.listeners.after.event_stopped['dapui_config'] = function() dapui.open() end
 dap.listeners.before.event_terminated['dapui_config'] = dapui.close
 dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
