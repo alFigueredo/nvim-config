@@ -55,6 +55,14 @@ vim.api.nvim_create_autocmd('PackChanged', {
       vim.cmd 'TSUpdate'
       return
     end
+
+    -- molten is a Python remote plugin: its commands only exist after regenerating the rplugin manifest
+    if name == 'molten-nvim' then
+      if not ev.data.active then vim.cmd.packadd 'molten-nvim' end
+      local ok, err = pcall(vim.cmd, 'UpdateRemotePlugins')
+      if not ok then vim.notify(('UpdateRemotePlugins failed for %s:\n%s'):format(name, err), vim.log.levels.ERROR) end
+      return
+    end
   end,
 })
 
