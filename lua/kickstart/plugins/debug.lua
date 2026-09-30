@@ -99,13 +99,28 @@ dap.listeners.before.event_exited['dapui_config'] = dapui.close
 --   },
 -- }
 
-dap.configurations.cpp = {
-  {
-    name = 'Launch with Cmake',
-    type = 'cppdbg',
-    request = 'launch',
-    program = function() return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/build/Debug/', 'file') end,
-    cwd = '${workspaceFolder}',
-    stopAtEntry = true,
+-- C/C++ through cpptools (cppdbg) + gdb. Single-config CMake generators (Make, Ninja) put the binary in build/
+local function cpp_program() return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/build/', 'file') end
+
+local cppdbg = {
+  type = 'cppdbg',
+  request = 'launch',
+  MIMode = 'gdb',
+  program = cpp_program,
+  cwd = '${workspaceFolder}',
+  stopAtEntry = false,
+  -- Show STL containers and strings by value instead of their internals
+  setupCommands = {
+    { text = '-enable-pretty-printing', description = 'Enable pretty printing', ignoreFailures = false },
   },
 }
+
+dap.configurations.cpp = {
+  vim.tbl_extend('force', cppdbg, { name = 'Launch' }),
+  vim.tbl_extend('force', cppdbg, {
+    name = 'Launch with arguments',
+    args = function() return require('dap.utils').splitstr(vim.fn.input 'Arguments: ') end,
+  }),
+  vim.tbl_extend('force', cppdbg, { name = 'Attach to gdbserver :1234', miDebuggerServerAddress = 'localhost:1234' }),
+}
+dap.configurations.c = dap.configurations.cpp

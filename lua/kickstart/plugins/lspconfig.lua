@@ -59,12 +59,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
     --  For example, in C this would take you to the header.
     map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
+    local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+    -- Jump between a C/C++ source file and its header (command defined by nvim-lspconfig's clangd config)
+    if client and client.name == 'clangd' then map('grh', '<Cmd>LspClangdSwitchSourceHeader<CR>', 'Switch source/[H]eader') end
+
     -- The following two autocommands are used to highlight references of the
     -- word under your cursor when your cursor rests there for a little while.
     --    See `:help CursorHold` for information about when this is executed
     --
     -- When you move your cursor, the highlights will be cleared (the second autocommand).
-    local client = vim.lsp.get_client_by_id(event.data.client_id)
     if client and client:supports_method('textDocument/documentHighlight', event.buf) then
       local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
       vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
@@ -103,7 +107,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
 --  See `:help lsp-config` for information about keys and how to configure
 ---@type table<string, vim.lsp.Config>
 local servers = {
-  clangd = {},
+  clangd = {
+    -- clang-tidy checks as diagnostics (uses the project's .clang-tidy if present), and no automatic #include on completion
+    cmd = { 'clangd', '--clang-tidy', '--header-insertion=never' },
+  },
   -- gopls = {},
   pyright = {},
   -- rust_analyzer = {},
