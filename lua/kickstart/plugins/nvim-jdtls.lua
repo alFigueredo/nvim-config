@@ -21,6 +21,10 @@ for _, java_test_jar in ipairs(java_test_bundles) do
   if not vim.tbl_contains(excluded, fname) then table.insert(bundles, java_test_jar) end
 end
 
+-- Lombok ships with Mason's jdtls package. Without the agent jdtls doesn't see the generated
+-- getters, constructors, builders, ... and reports every use of them as an error
+local lombok = vim.fs.joinpath(mason_share, 'jdtls', 'lombok.jar')
+
 local root_markers = { 'gradlew', 'mvnw', 'pom.xml', 'build.gradle', 'build.gradle.kts', 'settings.gradle', 'settings.gradle.kts', '.git' }
 
 vim.api.nvim_create_autocmd('FileType', {
@@ -34,8 +38,11 @@ vim.api.nvim_create_autocmd('FileType', {
     local project = vim.fn.fnamemodify(root_dir, ':p:h'):gsub('[/\\:]', '_')
     local workspace_dir = vim.fs.joinpath(vim.fn.stdpath 'cache', 'jdtls', 'workspace', project)
 
+    local cmd = { 'jdtls', '-data', workspace_dir }
+    if vim.uv.fs_stat(lombok) then table.insert(cmd, 2, '--jvm-arg=-javaagent:' .. lombok) end
+
     jdtls.start_or_attach({
-      cmd = { 'jdtls', '-data', workspace_dir },
+      cmd = cmd,
       root_dir = root_dir,
       capabilities = require('blink.cmp').get_lsp_capabilities(),
       init_options = {

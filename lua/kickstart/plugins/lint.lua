@@ -8,8 +8,6 @@ lint.linters_by_ft = {
   -- c = { 'cpplint' },
   -- cpp = { 'cpplint' },
   -- cmake = { 'cmakelint' },
-
-  java = { 'checkstyle' },
 }
 
 -- To allow other plugins to add linters to require('lint').linters_by_ft,
@@ -63,6 +61,10 @@ local eslint_configs = {
   '.eslintrc.yaml',
 }
 
+-- Same for Checkstyle: it only runs with the project's own rules. nvim-lint's default is the bundled
+-- Google style, which flags nearly every line of code that isn't written in it (tabs, 4 spaces, no Javadoc)
+local checkstyle_configs = { 'checkstyle.xml', 'config/checkstyle/checkstyle.xml' }
+
 -- Create autocommand which carries out the actual linting
 -- on the specified events.
 local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
@@ -79,6 +81,14 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
       -- Run from the directory of the config, so it is also found when Neovim was opened elsewhere (monorepos)
       local eslint_root = eslint_filetypes[vim.bo.filetype] and vim.fs.root(0, eslint_configs)
       if eslint_root then lint.try_lint('eslint_d', { cwd = eslint_root }) end
+
+      if vim.bo.filetype == 'java' then
+        local config = vim.fs.find(checkstyle_configs, { upward = true, path = vim.fs.dirname(vim.api.nvim_buf_get_name(0)) })[1]
+        if config then
+          lint.linters.checkstyle.config_file = config
+          lint.try_lint 'checkstyle'
+        end
+      end
     end
   end,
 })

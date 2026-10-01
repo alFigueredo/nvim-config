@@ -75,7 +75,7 @@ lua/keymaps.lua           atajos generales y configuración de diagnósticos
 lua/pack.lua              pasos de compilación tras instalar/actualizar plugins
 lua/plugins.lua           lista de módulos de plugins que se cargan
 lua/kickstart/plugins/    un archivo por plugin
-ftplugin/                 ajustes por tipo de archivo (c, cpp, web, tex, markdown, http)
+ftplugin/                 ajustes por tipo de archivo (c, cpp, java, web, tex, markdown, http)
 ```
 
 Para desactivar un plugin, comentá su `require` en `lua/plugins.lua`.
@@ -233,8 +233,12 @@ se detecta por `pom.xml`, `build.gradle`, `gradlew`, `mvnw` o `.git`.
 
 - **Depuración:** `<leader>dc` muestra las clases `main` del proyecto. Los
   cambios se aplican en caliente (hot code replace).
-- **Linting:** checkstyle.
-- **Formateo:** google-java-format, solo manual con `<leader>f`.
+- **Linting:** checkstyle, solo en proyectos que traen sus reglas en
+  `checkstyle.xml` o `config/checkstyle/checkstyle.xml`.
+- **Formateo:** google-java-format, solo manual con `<leader>f`. Los archivos
+  nuevos se indentan con 2 espacios.
+- **Lombok:** jdtls arranca con el agente de Lombok que instala Mason, así que
+  reconoce el código que generan sus anotaciones.
 
 ### Python y notebooks (Molten)
 
@@ -376,8 +380,9 @@ YAML y Java quedan fuera y se formatean a mano con `<leader>f`.
 | Java | google-java-format |
 
 El linting corre con [nvim-lint](https://github.com/mfussenegger/nvim-lint):
-checkstyle para Java, eslint_d para JavaScript y TypeScript en los proyectos
-que configuran ESLint, y editorconfig-checker para todos los archivos. Se
+checkstyle para Java y eslint_d para JavaScript y TypeScript, ambos solo en los
+proyectos que traen su configuración, y editorconfig-checker para todos los
+archivos. Se
 revisa al abrir el buffer, al guardar y al salir del modo inserción.
 
 ## Mantenimiento
