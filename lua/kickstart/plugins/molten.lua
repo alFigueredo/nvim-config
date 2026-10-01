@@ -1,6 +1,6 @@
 local utils = require 'kickstart.plugins.utils'
 
--- Dedicated venv with pynvim + jupyter_client (system Python is externally managed on Arch).
+-- Dedicated venv with pynvim, jupyter_client, ... (system Python is externally managed on Arch), see the README for the full list.
 -- Must be set before vim.pack.add, since installing molten runs :UpdateRemotePlugins
 local python_venv = vim.fs.joinpath(vim.fn.stdpath 'data', 'python-venv', 'bin', 'python')
 if vim.uv.fs_stat(python_venv) then vim.g.python3_host_prog = python_venv end

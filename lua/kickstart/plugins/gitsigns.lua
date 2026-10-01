@@ -1,9 +1,7 @@
 local utils = require 'kickstart.plugins.utils'
 
--- Here is a more advanced configuration example that passes options to `gitsigns.nvim`
---
--- See `:help gitsigns` to understand what each configuration key does.
 -- Adds git related signs to the gutter, as well as utilities for managing changes
+-- See `:help gitsigns` to understand what each configuration key does.
 vim.pack.add { utils.gh 'lewis6991/gitsigns.nvim' }
 require('gitsigns').setup {
   signs = {
@@ -14,10 +12,7 @@ require('gitsigns').setup {
     changedelete = { text = '~' }, ---@diagnostic disable-line: missing-fields
   },
 
-  -- Adds git related signs to the gutter, as well as utilities for managing changes
-  -- NOTE: gitsigns is already included in init.lua but contains only the base
-  -- config. This will add also the recommended keymaps.
-
+  -- Buffer-local keymaps, set in every buffer that belongs to a git repository
   on_attach = function(bufnr)
     local gitsigns = require 'gitsigns'
 

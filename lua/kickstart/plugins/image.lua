@@ -12,7 +12,7 @@ end
 if not ueberzug_supported() then return end
 
 require('image').setup {
-  backend = 'ueberzug', -- or "ueberzug" or "sixel"
+  backend = 'ueberzug', -- or "kitty" or "sixel", for terminals that support those protocols
   processor = 'magick_cli', -- or "magick_rock"
   integrations = {
     markdown = {
