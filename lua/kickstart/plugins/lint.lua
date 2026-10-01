@@ -44,6 +44,25 @@ lint.linters_by_ft = {
 -- lint.linters_by_ft['terraform'] = nil
 -- lint.linters_by_ft['text'] = nil
 
+-- ESLint is not in linters_by_ft because it only runs in projects that configure it:
+-- without a config file eslint_d reports an error on every buffer
+local eslint_filetypes = { javascript = true, javascriptreact = true, typescript = true, typescriptreact = true }
+local eslint_configs = {
+  'eslint.config.js',
+  'eslint.config.mjs',
+  'eslint.config.cjs',
+  'eslint.config.ts',
+  'eslint.config.mts',
+  'eslint.config.cts',
+  -- Legacy format, still used by projects on ESLint 8
+  '.eslintrc',
+  '.eslintrc.js',
+  '.eslintrc.cjs',
+  '.eslintrc.json',
+  '.eslintrc.yml',
+  '.eslintrc.yaml',
+}
+
 -- Create autocommand which carries out the actual linting
 -- on the specified events.
 local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
@@ -56,6 +75,10 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
     if vim.bo.modifiable then
       lint.try_lint()
       lint.try_lint 'editorconfig-checker'
+
+      -- Run from the directory of the config, so it is also found when Neovim was opened elsewhere (monorepos)
+      local eslint_root = eslint_filetypes[vim.bo.filetype] and vim.fs.root(0, eslint_configs)
+      if eslint_root then lint.try_lint('eslint_d', { cwd = eslint_root }) end
     end
   end,
 })

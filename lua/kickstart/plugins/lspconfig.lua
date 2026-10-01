@@ -125,7 +125,7 @@ local servers = {
   --    https://github.com/pmizio/typescript-tools.nvim
   --
   -- But for many setups, the LSP (`ts_ls`) will work just fine
-  -- ts_ls = {},
+  ts_ls = {}, -- JavaScript and TypeScript. Formatting is done by prettierd, see conform.lua
 
   bashls = {},
   neocmake = {},
@@ -214,6 +214,7 @@ vim.list_extend(ensure_installed, {
   -- Linters, see lint.lua
   'checkstyle',
   'editorconfig-checker',
+  'eslint_d',
 })
 
 require('mason-tool-installer').setup { ensure_installed = ensure_installed }

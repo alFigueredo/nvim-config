@@ -6,7 +6,7 @@ módulos y con los plugins gestionados por `vim.pack`, el gestor que viene con
 Neovim. Requiere **Neovim 0.12 o más nuevo**.
 
 Está pensada para programar en C/C++, Java, Python (con notebooks vía Molten),
-Lua y shell, y para escribir en LaTeX y Markdown.
+JavaScript/TypeScript, Lua y shell, y para escribir en LaTeX y Markdown.
 
 ## Índice
 
@@ -75,7 +75,7 @@ lua/keymaps.lua           atajos generales y configuración de diagnósticos
 lua/pack.lua              pasos de compilación tras instalar/actualizar plugins
 lua/plugins.lua           lista de módulos de plugins que se cargan
 lua/kickstart/plugins/    un archivo por plugin
-ftplugin/                 ajustes por tipo de archivo (c, cpp, tex, markdown, http)
+ftplugin/                 ajustes por tipo de archivo (c, cpp, web, tex, markdown, http)
 ```
 
 Para desactivar un plugin, comentá su `require` en `lua/plugins.lua`.
@@ -270,6 +270,16 @@ Los gráficos se dibujan dentro de Neovim solo si está instalado `ueberzugpp` y
 la sesión es X11, Hyprland, Sway o Wayfire. En KDE Plasma (Wayland) no
 funciona, así que los gráficos se abren con `<leader>mp`.
 
+### JavaScript y TypeScript
+
+- **LSP:** ts_ls (typescript-language-server), también en JSX y TSX.
+- **Linting:** eslint_d, solo en proyectos con configuración de ESLint
+  (`eslint.config.*` o `.eslintrc*`). Usa el ESLint instalado en el proyecto.
+- **Formateo:** prettierd al guardar, igual que en HTML y CSS.
+- [nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag) cierra y
+  renombra las etiquetas en HTML, JSX y TSX.
+- Los archivos nuevos de JS, TS, HTML, CSS y JSON se indentan con 2 espacios.
+
 ### LaTeX
 
 [vimtex](https://github.com/lervag/vimtex) compila y abre el PDF;
@@ -366,7 +376,8 @@ YAML y Java quedan fuera y se formatean a mano con `<leader>f`.
 | Java | google-java-format |
 
 El linting corre con [nvim-lint](https://github.com/mfussenegger/nvim-lint):
-checkstyle para Java y editorconfig-checker para todos los archivos. Se
+checkstyle para Java, eslint_d para JavaScript y TypeScript en los proyectos
+que configuran ESLint, y editorconfig-checker para todos los archivos. Se
 revisa al abrir el buffer, al guardar y al salir del modo inserción.
 
 ## Mantenimiento
