@@ -123,7 +123,15 @@ local servers = {
 
   bashls = {},
   neocmake = {},
-  texlab = {}, -- completion and diagnostics for LaTeX; building and viewing is done by vimtex
+  -- Completion and diagnostics for LaTeX; building and viewing is done by vimtex
+  texlab = {
+    settings = {
+      texlab = {
+        -- Typographic checks (missing `~` before \ref, wrong dashes, plain quotes, ...). Silence unwanted ones with a .chktexrc
+        chktex = { onOpenAndSave = true, onEdit = false },
+      },
+    },
+  },
 
   stylua = {}, -- Used to format Lua code
 

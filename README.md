@@ -120,6 +120,21 @@ repite `hjkl` en lugar de usar movimientos más eficientes.
 | `K` | Documentación |
 | `<leader>th` | Mostrar/ocultar inlay hints |
 
+### Autocompletado y snippets
+
+Los snippets de [friendly-snippets](https://github.com/rafamadriz/friendly-snippets)
+aparecen en el menú de autocompletado junto con las sugerencias del LSP. En
+Markdown y LaTeX también se ofrecen las palabras ya escritas en los buffers
+abiertos.
+
+| Atajo | Acción |
+| :- | :- |
+| `<C-n>` / `<C-p>` | Sugerencia siguiente / anterior |
+| `<C-y>` | Aceptar la sugerencia o expandir el snippet |
+| `<Tab>` / `<S-Tab>` | Campo siguiente / anterior del snippet |
+| `<C-space>` | Abrir el menú o la documentación |
+| `<C-e>` | Cerrar el menú |
+
 ### Git (gitsigns)
 
 | Atajo | Acción |
@@ -265,6 +280,28 @@ funciona, así que los gráficos se abren con `<leader>mp`.
 | `<leader>lc` | Borrar archivos auxiliares |
 | `<leader>lt` | Índice del documento |
 
+Dentro de una zona matemática,
+[luasnip-latex-snippets](https://github.com/iurimateus/luasnip-latex-snippets.nvim)
+expande atajos mientras se escribe, sin pasar por el menú:
+
+| Se escribe | Resultado |
+| :- | :- |
+| `mk` / `dm` (en el texto) | `\( \)` / `\[ \]` |
+| `beg` (al inicio de la línea) | `\begin{} … \end{}` |
+| `//` | `\frac{}{}` |
+| `x2` | `x_{2}` |
+| `sr` / `cb` | `^2` / `^3` |
+| `xhat` / `xbar` | `\hat{x}` / `\overline{x}` |
+| `<=` / `>=` / `!=` | `\le` / `\ge` / `\neq` |
+| `=>` / `ooo` / `RR` | `\implies` / `\infty` / `\mathbb{R}` |
+
+`<Tab>` salta al campo siguiente. Solo funcionan en archivos `.tex`.
+
+- texlab corre [ChkTeX](https://www.nongnu.org/chktex/) al abrir y al guardar:
+  avisa si falta `~` antes de `\ref` o `\cite`, de guiones de largo
+  incorrecto, comillas `"`, `...` y `$$ … $$`. Los avisos que no interesen se
+  silencian con un `.chktexrc` en el proyecto o en `~`. En el primer archivo
+  de la sesión aparecen recién al guardar.
 - Compila con latexmk y biber. Los auxiliares (`.aux`, `.log`, `.bbl`, …) van a
   `build/`; el PDF queda junto al `.tex`.
 - El visor es zathura. Ctrl+clic en el PDF salta a la línea correspondiente
