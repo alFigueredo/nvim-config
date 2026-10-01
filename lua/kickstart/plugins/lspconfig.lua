@@ -196,6 +196,19 @@ vim.list_extend(ensure_installed, {
   'jdtls', -- started by nvim-jdtls, see nvim-jdtls.lua
   'java-debug-adapter',
   'java-test',
+
+  -- Formatters, see conform.lua
+  'clang-format',
+  'gersemi',
+  'ruff',
+  'prettierd',
+  'shfmt',
+  'kulala-fmt',
+  'google-java-format',
+
+  -- Linters, see lint.lua
+  'checkstyle',
+  'editorconfig-checker',
 })
 
 require('mason-tool-installer').setup { ensure_installed = ensure_installed }
