@@ -25,7 +25,7 @@ En Arch Linux:
 
 ```sh
 # Base
-sudo pacman -S --needed neovim git make gcc unzip ripgrep fd tree-sitter-cli wl-clipboard xdg-utils nodejs npm python shellcheck
+sudo pacman -S --needed neovim git make gcc unzip ripgrep fd tree-sitter-cli wl-clipboard xdg-utils nodejs npm python
 
 # C/C++ y Java
 sudo pacman -S --needed cmake gdb jdk-openjdk
@@ -41,7 +41,6 @@ sudo pacman -S --needed texlive-meta texlive-langspanish texlive-langenglish bib
 - Node puede venir de `nvm` en lugar de pacman, pero `node` y `npm` tienen que
   estar en el `PATH` del proceso que lanza Neovim: varias herramientas de Mason
   los necesitan para instalarse y para correr.
-- `shellcheck` es el que aporta los diagnósticos de shell a bashls.
 - Opcional: `jq`, para consultar las respuestas JSON en los archivos `.http`.
 - Opcional: `ueberzugpp` e `imagemagick` para ver imágenes dentro de Neovim
   (ver [Python y Molten](#python-y-molten)).
@@ -85,7 +84,7 @@ lua/pack.lua              pasos de compilación tras instalar/actualizar plugins
 lua/plugins.lua           lista de módulos de plugins que se cargan
 lua/kickstart/plugins/    un archivo por plugin
 lua/kickstart/health.lua  chequeos de `:checkhealth kickstart`
-ftplugin/                 ajustes por tipo de archivo (c, cpp, java, web, tex, markdown, http)
+ftplugin/                 ajustes por tipo de archivo (c, cpp, java, web, shell, tex, markdown, http)
 nvim-pack-lock.json       versión exacta de cada plugin (lo escribe vim.pack)
 ```
 
@@ -375,7 +374,11 @@ falta.
 ### Otros
 
 - **Lua:** lua_ls y stylua al guardar.
-- **Shell:** bashls (con los diagnósticos de `shellcheck`) y shfmt al guardar.
+- **Shell:** en `sh` y `bash`, bashls con los diagnósticos y arreglos rápidos
+  de shellcheck (lo instala Mason), y shfmt al guardar. Los scripts nuevos se
+  indentan con 2 espacios; los existentes conservan su indentación. En zsh solo
+  hay formateo, y shfmt no entiende toda su sintaxis: si el archivo usa algo
+  que no reconoce, queda sin formatear.
 - **CMake:** neocmakelsp y gersemi.
 - **PlantUML:** los `.puml` generan un `.png` al guardar. `<leader>pr` (o
   `:RenderUML`) lo genera y lo abre.

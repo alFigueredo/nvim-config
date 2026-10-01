@@ -215,6 +215,7 @@ vim.list_extend(ensure_installed, {
   'checkstyle',
   'editorconfig-checker',
   'eslint_d',
+  'shellcheck', -- not run by nvim-lint: bashls finds it in PATH and reports its diagnostics
 })
 
 require('mason-tool-installer').setup { ensure_installed = ensure_installed }
