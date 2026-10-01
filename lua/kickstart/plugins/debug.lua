@@ -6,6 +6,8 @@
 -- be extended to other languages as well. That's why it's called
 -- kickstart.nvim and not kitchen-sink.nvim ;)
 
+local utils = require 'kickstart.plugins.utils'
+
 vim.pack.add {
   'https://github.com/mfussenegger/nvim-dap',
   'https://github.com/rcarriga/nvim-dap-ui',
@@ -37,7 +39,15 @@ require('mason-nvim-dap').setup {
 
   -- You can provide additional configuration to the handlers,
   -- see mason-nvim-dap README for more information
-  handlers = {},
+  handlers = {
+    -- Run the program with the project's venv (see utils.python_venv) instead of debugpy's own interpreter
+    python = function(config)
+      for _, configuration in ipairs(config.configurations) do
+        configuration.pythonPath = function() return utils.python_path(utils.python_root()) end
+      end
+      require('mason-nvim-dap').default_setup(config)
+    end,
+  },
 
   -- You'll need to check that you have the required things installed
   -- online, please don't ask me how to install them :)

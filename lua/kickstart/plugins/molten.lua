@@ -15,17 +15,9 @@ vim.g.molten_output_show_more = true
 
 -- Start molten with the project's own venv as kernel, so each project only installs what it needs
 -- (plus ipykernel). Falls back to the global `python3` kernel when there's no venv.
-local function project_venv(root)
-  if vim.env.VIRTUAL_ENV then return vim.env.VIRTUAL_ENV end
-  for _, name in ipairs { '.venv', 'venv' } do
-    local dir = vim.fs.joinpath(root, name)
-    if vim.uv.fs_stat(vim.fs.joinpath(dir, 'bin', 'python')) then return dir end
-  end
-end
-
 local function molten_init_project()
-  local root = vim.fs.root(0, { 'pyproject.toml', '.venv', 'venv', 'requirements.txt', '.git' }) or vim.fn.getcwd()
-  local venv = project_venv(root)
+  local root = utils.python_root()
+  local venv = utils.python_venv(root)
   if not venv then
     vim.cmd 'MoltenInit python3'
     return

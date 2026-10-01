@@ -113,7 +113,12 @@ local servers = {
     cmd = { 'clangd', '--clang-tidy', '--header-insertion=never', '--log=error' },
   },
   -- gopls = {},
-  pyright = {},
+  pyright = {
+    -- Resolve imports against the project's venv (see utils.python_venv) even when it isn't activated.
+    -- Without one pythonPath stays nil and pyright falls back to the `python` in PATH
+    on_init = function(client) client.settings.python.pythonPath = utils.python_path(client.root_dir) end,
+  },
+  ruff = {}, -- Lint diagnostics and quick fixes for Python. Also the formatter, see conform.lua
   -- rust_analyzer = {},
   --
   -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -201,7 +206,6 @@ vim.list_extend(ensure_installed, {
   -- Formatters, see conform.lua
   'clang-format',
   'gersemi',
-  'ruff',
   'prettierd',
   'shfmt',
   'kulala-fmt',

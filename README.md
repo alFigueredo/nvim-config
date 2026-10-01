@@ -56,7 +56,7 @@ venv propio:
 
 ```sh
 python -m venv ~/.local/share/nvim/python-venv
-~/.local/share/nvim/python-venv/bin/pip install pynvim jupyter_client nbformat
+~/.local/share/nvim/python-venv/bin/pip install pynvim jupyter_client nbformat pillow
 ```
 
 Después abrí `nvim`: `vim.pack` pide confirmación, descarga los plugins,
@@ -238,8 +238,10 @@ se detecta por `pom.xml`, `build.gradle`, `gradlew`, `mvnw` o `.git`.
 
 ### Python y notebooks (Molten)
 
-- **LSP:** pyright. **Formateo:** ruff al guardar.
+- **LSP:** pyright. **Linting:** ruff. **Formateo:** ruff al guardar.
 - **Depuración:** debugpy.
+- pyright, debugpy y Molten usan el venv activo (`$VIRTUAL_ENV`) o el
+  `.venv`/`venv` de la raíz del proyecto, sin necesidad de activarlo.
 - **Molten** ejecuta código en un kernel de Jupyter y muestra el resultado
   debajo de cada celda.
 
@@ -255,9 +257,8 @@ se detecta por `pom.xml`, `build.gradle`, `gradlew`, `mvnw` o `.git`.
 | `<leader>md` | Borrar la celda |
 | `<leader>mp` | Abrir la imagen de la salida en un visor externo |
 
-`<leader>mi` usa el venv activo (`$VIRTUAL_ENV`) o el `.venv`/`venv` de la raíz
-del proyecto, y lo registra como kernel de Jupyter la primera vez. Ese venv
-necesita `ipykernel`:
+`<leader>mi` registra el venv del proyecto como kernel de Jupyter la primera
+vez. Ese venv necesita `ipykernel`:
 
 ```sh
 .venv/bin/python -m pip install ipykernel   # o: uv add --dev ipykernel
