@@ -200,12 +200,10 @@ breakpoint, un paso o una excepción) y se cierra al terminar.
 - **Formateo:** clang-format al guardar. Usa el `.clang-format` del proyecto si
   existe. CMake se formatea con gersemi.
 - **Depuración:** cpptools con gdb. En un proyecto CMake, `<leader>cd` compila
-  y depura el target elegido. Fuera de CMake, `<leader>dc` ofrece tres
-  opciones: lanzar el programa, lanzarlo con argumentos o conectarse a un
-  `gdbserver` en `localhost:1234`. El ejecutable se pide empezando en `build/`
-  y tiene que estar compilado con símbolos de depuración (`-g`, o
-  `-DCMAKE_BUILD_TYPE=Debug` en CMake). Los contenedores de la STL se ven con
-  sus valores.
+  y depura el target elegido. Fuera de CMake, `<leader>dc` lanza el programa,
+  con o sin argumentos, o se conecta a un `gdbserver` en `localhost:1234`. El
+  ejecutable tiene que estar compilado con símbolos de depuración (`-g`, o el
+  tipo de build Debug en CMake).
 
 #### CMake
 
@@ -287,9 +285,8 @@ vez. Ese venv necesita `ipykernel`:
 Si el proyecto no tiene venv, se usa el kernel `python3` del venv de Neovim
 (ver [Instalación](#instalación)).
 
-Los gráficos se dibujan dentro de Neovim solo si está instalado `ueberzugpp` y
-la sesión es X11, Hyprland, Sway o Wayfire. En KDE Plasma (Wayland) no
-funciona, así que los gráficos se abren con `<leader>mp`.
+Los gráficos se dibujan dentro de Neovim con `ueberzugpp`, que no funciona en
+KDE Plasma con Wayland. Ahí se abren con `<leader>mp`.
 
 ### JavaScript y TypeScript
 
@@ -319,11 +316,9 @@ funciona, así que los gráficos se abren con `<leader>mp`.
 - El visor es zathura. Ctrl+clic en el PDF salta a la línea correspondiente
   del `.tex`. En X11 con `xdotool` se usa la integración completa de vimtex; en
   Wayland, la simple.
-- texlab corre [ChkTeX](https://www.nongnu.org/chktex/) al abrir y al guardar:
-  avisa si falta `~` antes de `\ref` o `\cite`, de guiones de largo
-  incorrecto, comillas `"`, `...` y `$$ … $$`. Los avisos que no interesen se
-  silencian con un `.chktexrc` en el proyecto o en `~`. En el primer archivo
-  de la sesión aparecen recién al guardar.
+- texlab corre [ChkTeX](https://www.nongnu.org/chktex/) al abrir y al guardar,
+  con avisos tipográficos (falta `~` antes de `\ref`, guiones, comillas). Los
+  que no interesen se silencian con un `.chktexrc` en el proyecto o en `~`.
 
 #### Snippets matemáticos
 
@@ -383,26 +378,14 @@ falta.
 
 ## Formateo y linting
 
-Se formatea al guardar con [conform.nvim](https://github.com/stevearc/conform.nvim)
-en los tipos de archivo habilitados en `lua/kickstart/plugins/conform.lua`. JSON,
-YAML y Java quedan fuera y se formatean a mano con `<leader>f`.
+[conform.nvim](https://github.com/stevearc/conform.nvim) formatea al guardar
+con el formateador de cada lenguaje (ver [Lenguajes](#lenguajes)). JSON y YAML
+(prettierd) y Java quedan fuera y se formatean a mano con `<leader>f`. Los
+tipos de archivo habilitados están en `lua/kickstart/plugins/conform.lua`.
 
-| Lenguaje                                      | Formateador        |
-| :-------------------------------------------- | :----------------- |
-| C / C++                                       | clang-format       |
-| CMake                                         | gersemi            |
-| Python                                        | ruff               |
-| Lua                                           | stylua             |
-| Shell                                         | shfmt              |
-| JS / TS / HTML / CSS / JSON / YAML / Markdown | prettierd          |
-| HTTP                                          | kulala-fmt         |
-| Java                                          | google-java-format |
-
-El linting corre con [nvim-lint](https://github.com/mfussenegger/nvim-lint):
-checkstyle para Java y eslint_d para JavaScript y TypeScript, ambos solo en los
-proyectos que traen su configuración, y editorconfig-checker para todos los
-archivos. Se revisa al abrir el buffer, al guardar y al salir del modo
-inserción.
+[nvim-lint](https://github.com/mfussenegger/nvim-lint) revisa el buffer al
+abrirlo, al guardar y al salir del modo inserción. Además de los linters de
+cada lenguaje, editorconfig-checker corre en todos los archivos.
 
 ### Indentación
 
@@ -427,12 +410,10 @@ Para agregar otra, creá un `ftplugin/<lenguaje>.lua`.
 | Actualizar parsers de treesitter    | `:TSUpdate`                                                                             |
 | Revisar problemas                   | `:checkhealth`                                                                          |
 
-`nvim-pack-lock.json` guarda la versión exacta de cada plugin y está versionado:
-al clonar en otra máquina, `vim.pack` instala esas mismas versiones.
-Después de actualizar plugins, commiteá el lockfile junto con los cambios. En
-una máquina que ya tenía los plugins instalados, después de un `git pull` que
-trae un lockfile nuevo hay que reiniciar Neovim y volver a las versiones del
-lockfile con el comando de la tabla.
+`nvim-pack-lock.json` está versionado: después de actualizar plugins,
+commiteá el lockfile. En otra máquina que ya tenía los plugins, después de un
+`git pull` reiniciá Neovim y volvé a las versiones del lockfile con el comando
+de la tabla.
 
 ## Licencia
 

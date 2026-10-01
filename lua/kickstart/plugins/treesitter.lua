@@ -5,7 +5,6 @@ local utils = require 'kickstart.plugins.utils'
 --
 --  See `:help nvim-treesitter-intro`
 
--- NOTE: You can also specify a branch or a specific commit
 vim.pack.add { { src = utils.gh 'nvim-treesitter/nvim-treesitter', version = 'main' } }
 
 -- Ensure basic parsers are installed
@@ -30,11 +29,6 @@ local function treesitter_try_attach(buf, language)
   if not vim.treesitter.language.add(language) then return end
   -- Enable syntax highlighting and other treesitter features
   vim.treesitter.start(buf, language)
-
-  -- Enable treesitter based folds
-  -- For more info on folds see `:help folds`
-  -- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-  -- vim.wo.foldmethod = 'expr'
 
   -- Check if treesitter indentation is available for this language, and if so enable it
   -- in case there is no indent query, the indentexpr will fallback to the vim's built in one
