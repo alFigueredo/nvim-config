@@ -97,6 +97,7 @@ buscarlos.
 | `<C-h>` / `<C-l>` | Buffer anterior / siguiente |
 | `<C-x>` | Cerrar buffer |
 | `<leader>f` | Formatear buffer o selección |
+| `<leader>tc` | Mostrar/ocultar el contexto fijo arriba |
 | `<leader>q` | Lista de diagnósticos |
 | `[d` / `]d` | Diagnóstico anterior / siguiente |
 
@@ -151,24 +152,50 @@ breakpoint, un paso o una excepción) y se cierra al terminar.
 - **LSP:** clangd, con los chequeos de clang-tidy activados y sin agregar
   `#include` automáticamente al completar. Los chequeos de clang-tidy solo
   aparecen si el proyecto tiene un `.clang-tidy`.
-- **Base de compilación:** clangd necesita `compile_commands.json`. Con CMake:
+- **Base de compilación:** clangd necesita `compile_commands.json` y lo busca
+  solo en `build/`. `<leader>cg` lo genera ahí; a mano sería:
 
   ```sh
   cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
   ```
 
-  clangd lo busca solo en `build/`.
 - **Header ↔ fuente:** `grh` salta entre el `.cpp` y su `.h`.
 - **Indentación:** respeta la del archivo (tabs o espacios) y el
   `.editorconfig`. Los archivos nuevos usan 2 espacios, como el estilo LLVM
   por defecto de clang-format.
 - **Formateo:** clang-format al guardar. Usa el `.clang-format` del proyecto si
   existe. CMake se formatea con gersemi.
-- **Depuración:** cpptools con gdb. `<leader>dc` ofrece tres opciones: lanzar
-  el programa, lanzarlo con argumentos o conectarse a un `gdbserver` en
-  `localhost:1234`. El ejecutable se pide empezando en `build/`, así que
-  compilá con `-DCMAKE_BUILD_TYPE=Debug`. Los contenedores de la STL se ven
-  con sus valores.
+- **Depuración:** cpptools con gdb. En un proyecto CMake, `<leader>cd` compila
+  y depura el target elegido. Fuera de CMake, `<leader>dc` ofrece tres
+  opciones: lanzar el programa, lanzarlo con argumentos o conectarse a un
+  `gdbserver` en `localhost:1234`. El ejecutable se pide empezando en `build/`,
+  así que compilá con `-DCMAKE_BUILD_TYPE=Debug`. Los contenedores de la STL
+  se ven con sus valores.
+
+#### CMake
+
+[cmake-tools.nvim](https://github.com/Civitasv/cmake-tools.nvim) configura,
+compila, ejecuta y depura el proyecto desde Neovim. Todo se construye en
+`build/`.
+
+| Atajo | Acción |
+| :- | :- |
+| `<leader>cg` | Configurar (`:CMakeGenerate!` limpia el build y la caché antes) |
+| `<leader>cb` | Compilar |
+| `<leader>cr` | Compilar y ejecutar |
+| `<leader>cd` | Compilar y depurar |
+| `<leader>ct` | Elegir el tipo de build (Debug, Release, …) |
+| `<leader>cl` | Elegir el ejecutable a lanzar |
+| `<leader>ca` | Argumentos del ejecutable |
+| `<leader>cs` | Detener la compilación o la ejecución |
+
+- La primera vez pregunta el tipo de build y el ejecutable, y los recuerda por
+  proyecto.
+- La salida de la compilación va al quickfix, que se cierra solo si no hubo
+  errores. `:cnext` / `:cprev` saltan entre los errores.
+- El programa corre en una terminal abajo.
+- Al guardar un `CMakeLists.txt` se vuelve a configurar el proyecto.
+- `:CMakeRunTest` corre los tests de CTest.
 
 ### Java
 

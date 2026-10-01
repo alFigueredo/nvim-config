@@ -14,6 +14,7 @@ require('which-key').setup {
     { '<leader>r', group = '[R]est', mode = { 'n', 'v' } },
     { '<leader>l', group = 'Vimtex' },
     { '<leader>d', group = '[D]ebug' },
+    { '<leader>c', group = '[C]Make' },
     { '<leader>m', group = '[M]olten' },
     { '<leader>j', group = '[J]ava' },
     { '<leader>p', group = 'Others' },
