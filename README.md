@@ -84,7 +84,7 @@ lua/pack.lua              pasos de compilación tras instalar/actualizar plugins
 lua/plugins.lua           lista de módulos de plugins que se cargan
 lua/kickstart/plugins/    un archivo por plugin
 lua/kickstart/health.lua  chequeos de `:checkhealth kickstart`
-ftplugin/                 ajustes por tipo de archivo (c, cpp, java, web, shell, tex, markdown, http)
+ftplugin/                 ajustes por tipo de archivo (cmake, tsv, tex, markdown, http)
 nvim-pack-lock.json       versión exacta de cada plugin (lo escribe vim.pack)
 ```
 
@@ -197,9 +197,6 @@ breakpoint, un paso o una excepción) y se cierra al terminar.
   ```
 
 - **Header ↔ fuente:** `grh` salta entre el `.cpp` y su `.h`.
-- **Indentación:** respeta la del archivo (tabs o espacios) y el
-  `.editorconfig`. Los archivos nuevos usan 2 espacios, como el estilo LLVM
-  por defecto de clang-format.
 - **Formateo:** clang-format al guardar. Usa el `.clang-format` del proyecto si
   existe. CMake se formatea con gersemi.
 - **Depuración:** cpptools con gdb. En un proyecto CMake, `<leader>cd` compila
@@ -255,8 +252,7 @@ se detecta por `pom.xml`, `build.gradle`, `gradlew`, `mvnw` o `.git`.
   cambios se aplican en caliente (hot code replace).
 - **Linting:** checkstyle, solo en proyectos que traen sus reglas en
   `checkstyle.xml` o `config/checkstyle/checkstyle.xml`.
-- **Formateo:** google-java-format, solo manual con `<leader>f`. Los archivos
-  nuevos se indentan con 2 espacios.
+- **Formateo:** google-java-format, solo manual con `<leader>f`.
 - **Lombok:** jdtls arranca con el agente de Lombok que instala Mason, así que
   reconoce el código que generan sus anotaciones.
 
@@ -303,7 +299,6 @@ funciona, así que los gráficos se abren con `<leader>mp`.
 - **Formateo:** prettierd al guardar, igual que en HTML y CSS.
 - [nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag) cierra y
   renombra las etiquetas en HTML, JSX y TSX.
-- Los archivos nuevos de JS, TS, HTML, CSS y JSON se indentan con 2 espacios.
 
 ### LaTeX
 
@@ -375,10 +370,9 @@ falta.
 
 - **Lua:** lua_ls y stylua al guardar.
 - **Shell:** en `sh` y `bash`, bashls con los diagnósticos y arreglos rápidos
-  de shellcheck (lo instala Mason), y shfmt al guardar. Los scripts nuevos se
-  indentan con 2 espacios; los existentes conservan su indentación. En zsh solo
-  hay formateo, y shfmt no entiende toda su sintaxis: si el archivo usa algo
-  que no reconoce, queda sin formatear.
+  de shellcheck (lo instala Mason), y shfmt al guardar, con la indentación del
+  buffer. En zsh solo hay formateo, y shfmt no entiende toda su sintaxis: si el
+  archivo usa algo que no reconoce, queda sin formatear.
 - **CMake:** neocmakelsp y gersemi.
 - **PlantUML:** los `.puml` generan un `.png` al guardar. `<leader>pr` (o
   `:RenderUML`) lo genera y lo abre.
@@ -409,6 +403,17 @@ checkstyle para Java y eslint_d para JavaScript y TypeScript, ambos solo en los
 proyectos que traen su configuración, y editorconfig-checker para todos los
 archivos. Se revisa al abrir el buffer, al guardar y al salir del modo
 inserción.
+
+### Indentación
+
+Los archivos nuevos o sin indentar usan 2 espacios en todos los lenguajes
+(`lua/options.lua`). Los archivos existentes conservan la suya, tabs o
+espacios, y el `.editorconfig` del proyecto manda sobre todo lo demás.
+
+Las excepciones son los lenguajes con estilo propio: Python, Rust y Markdown
+usan 4 espacios y Go y los Makefile usan tabs (lo define Neovim), CMake usa 4
+espacios porque así formatea gersemi, y en los TSV el tabulador es un tab real.
+Para agregar otra, creá un `ftplugin/<lenguaje>.lua`.
 
 ## Mantenimiento
 

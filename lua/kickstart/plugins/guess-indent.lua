@@ -14,4 +14,8 @@ local utils = require 'kickstart.plugins.utils'
 -- We first install it from https://github.com/NMAC427/guess-indent.nvim
 -- and then call its `setup()` function to start it with default settings.
 vim.pack.add { utils.gh 'NMAC427/guess-indent.nvim' }
-require('guess-indent').setup {}
+require('guess-indent').setup {
+  -- In files indented with tabs, one indent level is one tab: shiftwidth = 0 follows tabstop.
+  -- Without this they would inherit the 2 spaces of the global default (see options.lua)
+  on_tab_options = { expandtab = false, shiftwidth = 0, softtabstop = 0 },
+}

@@ -7,7 +7,8 @@ local utils = {}
 ---@return string
 function utils.gh(repo) return 'https://github.com/' .. repo end
 
----Indent the current buffer with `width` spaces when it is new or unindented.
+---For filetypes that don't use the global default (see options.lua): indent the current buffer
+---with `width` spaces when it is new or unindented.
 ---Otherwise keep what guess-indent detected (and .editorconfig, which is applied after the ftplugin)
 ---@param width integer
 function utils.default_indent(width)

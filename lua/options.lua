@@ -33,6 +33,14 @@ vim.o.showmode = false
 --  See `:help 'clipboard'`
 vim.schedule(function() vim.o.clipboard = 'unnamedplus' end)
 
+-- Indent new or unindented files with 2 spaces.
+--  Existing files keep their own indentation (guess-indent.nvim) and .editorconfig wins over both.
+--  Filetypes with a style of their own override this: Neovim's runtime does it for Python,
+--  Rust, Go, Makefiles, ... and ftplugin/ for the rest (cmake, tsv)
+vim.o.shiftwidth = 2
+vim.o.softtabstop = 2
+vim.o.expandtab = true
+
 -- Enable break indent
 vim.o.breakindent = true
 
