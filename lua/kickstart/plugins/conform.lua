@@ -45,7 +45,7 @@ require('conform').setup {
   formatters_by_ft = {
     -- rust = { 'rustfmt' },
     -- Conform can also run multiple formatters sequentially
-    python = { 'ruff', 'isort', 'black', stop_after_first = true },
+    python = { 'ruff_organize_imports', 'ruff_format' },
     --
     -- You can use 'stop_after_first' to run the first available formatter from the list
     -- js / ts

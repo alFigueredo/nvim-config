@@ -108,8 +108,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
 ---@type table<string, vim.lsp.Config>
 local servers = {
   clangd = {
-    -- clang-tidy checks as diagnostics (uses the project's .clang-tidy if present), and no automatic #include on completion
-    cmd = { 'clangd', '--clang-tidy', '--header-insertion=never' },
+    -- clang-tidy checks as diagnostics (uses the project's .clang-tidy if present), and no automatic #include on completion.
+    -- Only errors on stderr: Neovim writes all of it to lsp.log, which otherwise grows by megabytes per session
+    cmd = { 'clangd', '--clang-tidy', '--header-insertion=never', '--log=error' },
   },
   -- gopls = {},
   pyright = {},
