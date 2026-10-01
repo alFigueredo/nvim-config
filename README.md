@@ -59,8 +59,9 @@ python -m venv ~/.local/share/nvim/python-venv
 ~/.local/share/nvim/python-venv/bin/pip install pynvim jupyter_client nbformat
 ```
 
-Después abrí `nvim`: `vim.pack` descarga los plugins, compila los que lo
-necesitan y registra el plugin remoto de Molten (`:UpdateRemotePlugins`).
+Después abrí `nvim`: `vim.pack` pide confirmación, descarga los plugins,
+compila los que lo necesitan y registra el plugin remoto de Molten
+(`:UpdateRemotePlugins`). Mason instala sus herramientas en segundo plano.
 Conviene reiniciar Neovim una vez que termine.
 
 Para comprobar que todo esté bien: `:checkhealth`.
@@ -74,7 +75,7 @@ lua/keymaps.lua           atajos generales y configuración de diagnósticos
 lua/pack.lua              pasos de compilación tras instalar/actualizar plugins
 lua/plugins.lua           lista de módulos de plugins que se cargan
 lua/kickstart/plugins/    un archivo por plugin
-ftplugin/                 ajustes por tipo de archivo (c, cpp, tex, markdown)
+ftplugin/                 ajustes por tipo de archivo (c, cpp, tex, markdown, http)
 ```
 
 Para desactivar un plugin, comentá su `require` en `lua/plugins.lua`.
@@ -165,8 +166,9 @@ breakpoint, un paso o una excepción) y se cierra al terminar.
 ### C y C++
 
 - **LSP:** clangd, con los chequeos de clang-tidy activados y sin agregar
-  `#include` automáticamente al completar. Los chequeos de clang-tidy solo
-  aparecen si el proyecto tiene un `.clang-tidy`.
+  `#include` automáticamente al completar. Sin un `.clang-tidy` en el proyecto
+  clangd aplica solo un conjunto mínimo de chequeos; con uno, los que ese
+  archivo indique.
 - **Base de compilación:** clangd necesita `compile_commands.json` y lo busca
   solo en `build/`. `<leader>cg` lo genera ahí; a mano sería:
 
@@ -183,9 +185,10 @@ breakpoint, un paso o una excepción) y se cierra al terminar.
 - **Depuración:** cpptools con gdb. En un proyecto CMake, `<leader>cd` compila
   y depura el target elegido. Fuera de CMake, `<leader>dc` ofrece tres
   opciones: lanzar el programa, lanzarlo con argumentos o conectarse a un
-  `gdbserver` en `localhost:1234`. El ejecutable se pide empezando en `build/`,
-  así que compilá con `-DCMAKE_BUILD_TYPE=Debug`. Los contenedores de la STL
-  se ven con sus valores.
+  `gdbserver` en `localhost:1234`. El ejecutable se pide empezando en `build/`
+  y tiene que estar compilado con símbolos de depuración (`-g`, o
+  `-DCMAKE_BUILD_TYPE=Debug` en CMake). Los contenedores de la STL se ven con
+  sus valores.
 
 #### CMake
 
@@ -280,13 +283,26 @@ funciona, así que los gráficos se abren con `<leader>mp`.
 | `<leader>lc` | Borrar archivos auxiliares |
 | `<leader>lt` | Índice del documento |
 
-Dentro de una zona matemática,
+- Compila con latexmk y biber. Los auxiliares (`.aux`, `.log`, `.bbl`, …) van a
+  `build/`; el PDF queda junto al `.tex`.
+- El visor es zathura. Ctrl+clic en el PDF salta a la línea correspondiente
+  del `.tex`. En X11 con `xdotool` se usa la integración completa de vimtex; en
+  Wayland, la simple.
+- texlab corre [ChkTeX](https://www.nongnu.org/chktex/) al abrir y al guardar:
+  avisa si falta `~` antes de `\ref` o `\cite`, de guiones de largo
+  incorrecto, comillas `"`, `...` y `$$ … $$`. Los avisos que no interesen se
+  silencian con un `.chktexrc` en el proyecto o en `~`. En el primer archivo
+  de la sesión aparecen recién al guardar.
+
+#### Snippets matemáticos
+
 [luasnip-latex-snippets](https://github.com/iurimateus/luasnip-latex-snippets.nvim)
-expande atajos mientras se escribe, sin pasar por el menú:
+expande estos atajos mientras se escribe, sin pasar por el menú. Los dos
+primeros funcionan en el texto; el resto, solo dentro de una zona matemática.
 
 | Se escribe | Resultado |
 | :- | :- |
-| `mk` / `dm` (en el texto) | `\( \)` / `\[ \]` |
+| `mk` / `dm` | `\( \)` / `\[ \]` |
 | `beg` (al inicio de la línea) | `\begin{} … \end{}` |
 | `//` | `\frac{}{}` |
 | `x2` | `x_{2}` |
@@ -296,17 +312,6 @@ expande atajos mientras se escribe, sin pasar por el menú:
 | `=>` / `ooo` / `RR` | `\implies` / `\infty` / `\mathbb{R}` |
 
 `<Tab>` salta al campo siguiente. Solo funcionan en archivos `.tex`.
-
-- texlab corre [ChkTeX](https://www.nongnu.org/chktex/) al abrir y al guardar:
-  avisa si falta `~` antes de `\ref` o `\cite`, de guiones de largo
-  incorrecto, comillas `"`, `...` y `$$ … $$`. Los avisos que no interesen se
-  silencian con un `.chktexrc` en el proyecto o en `~`. En el primer archivo
-  de la sesión aparecen recién al guardar.
-- Compila con latexmk y biber. Los auxiliares (`.aux`, `.log`, `.bbl`, …) van a
-  `build/`; el PDF queda junto al `.tex`.
-- El visor es zathura. Ctrl+clic en el PDF salta a la línea correspondiente
-  del `.tex`. En X11 con `xdotool` se usa la integración completa de vimtex; en
-  Wayland, la simple.
 
 ### Markdown
 
@@ -338,8 +343,9 @@ falta.
 - **PlantUML:** los `.puml` generan un `.png` al guardar. `<leader>pr` (o
   `:RenderUML`) lo genera y lo abre.
 - **HTTP:** los `.http` se ejecutan con
-  [resty.nvim](https://github.com/lima1909/resty.nvim) (`:Resty run`) y se
-  formatean con kulala-fmt.
+  [resty.nvim](https://github.com/lima1909/resty.nvim): `<leader>rr` ejecuta
+  la petición bajo el cursor y `<leader>rl` repite la última. Se formatean con
+  kulala-fmt.
 
 ## Formateo y linting
 
